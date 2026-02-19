@@ -152,10 +152,10 @@ endif
 # Bootstrap targets.
 # --------------------------------------------------------------------------
 
-.PHONY: all bootstrap check-deps clean distclean maintainer-clean
+.PHONY: all install bootstrap check-deps clean distclean maintainer-clean
 
-all: bootstrap
-	@$(MAKE) $(MAKECMDGOALS)
+all install: bootstrap
+	@$(MAKE) $@
 
 bootstrap: check-deps
 	@if [ ! -f configure ]; then \
@@ -171,8 +171,5 @@ check-deps:
 
 clean distclean maintainer-clean:
 	@echo "Nothing to clean (build system not yet bootstrapped)."
-
-%: all
-	@:
 
 endif
