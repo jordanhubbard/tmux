@@ -10,7 +10,8 @@
 # check.
 #
 # Variables:
-#   CONFIGURE_FLAGS  - extra flags passed to ./configure (e.g. --prefix=/opt)
+#   CONFIGURE_FLAGS  - extra flags passed to ./configure
+#                      (default: --prefix=$HOME/.local)
 
 # --------------------------------------------------------------------------
 # Fast path: if the autotools-generated Makefile already exists, delegate
@@ -32,7 +33,7 @@ else
 # --------------------------------------------------------------------------
 
 UNAME_S         := $(shell uname -s)
-CONFIGURE_FLAGS ?=
+CONFIGURE_FLAGS ?= --prefix=$(HOME)/.local
 
 # --------------------------------------------------------------------------
 # Per-OS configuration.
