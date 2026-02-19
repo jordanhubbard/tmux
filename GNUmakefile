@@ -46,8 +46,12 @@ HOMEBREW_PREFIX := $(shell brew --prefix 2>/dev/null)
 
 # Set PKG_CONFIG_PATH at configure time (after brew install has run)
 # and enable utf8proc (macOS wcwidth(3) has poor Unicode support).
+# Also pass LIBUTF8PROC_CFLAGS/LIBS directly since some Homebrew
+# installations don't expose a libutf8proc.pc file.
 CONFIGURE_ENV = \
-	PKG_CONFIG_PATH="$$(brew --prefix libevent 2>/dev/null)/lib/pkgconfig:$$(brew --prefix ncurses 2>/dev/null)/lib/pkgconfig:$$(brew --prefix utf8proc 2>/dev/null)/lib/pkgconfig:$$PKG_CONFIG_PATH"
+	PKG_CONFIG_PATH="$$(brew --prefix libevent 2>/dev/null)/lib/pkgconfig:$$(brew --prefix ncurses 2>/dev/null)/lib/pkgconfig:$$(brew --prefix utf8proc 2>/dev/null)/lib/pkgconfig:$$PKG_CONFIG_PATH" \
+	LIBUTF8PROC_CFLAGS="-I$$(brew --prefix utf8proc 2>/dev/null)/include" \
+	LIBUTF8PROC_LIBS="-L$$(brew --prefix utf8proc 2>/dev/null)/lib -lutf8proc"
 CONFIGURE_FLAGS += --enable-utf8proc
 
 define CHECK_DEPS
