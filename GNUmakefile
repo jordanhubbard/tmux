@@ -43,9 +43,11 @@ ifeq ($(UNAME_S),Darwin)
 
 HOMEBREW_PREFIX := $(shell brew --prefix 2>/dev/null)
 
-# Set PKG_CONFIG_PATH at configure time (after brew install has run).
+# Set PKG_CONFIG_PATH at configure time (after brew install has run)
+# and enable utf8proc (macOS wcwidth(3) has poor Unicode support).
 CONFIGURE_ENV = \
-	PKG_CONFIG_PATH="$$(brew --prefix libevent 2>/dev/null)/lib/pkgconfig:$$(brew --prefix ncurses 2>/dev/null)/lib/pkgconfig:$$PKG_CONFIG_PATH"
+	PKG_CONFIG_PATH="$$(brew --prefix libevent 2>/dev/null)/lib/pkgconfig:$$(brew --prefix ncurses 2>/dev/null)/lib/pkgconfig:$$(brew --prefix utf8proc 2>/dev/null)/lib/pkgconfig:$$PKG_CONFIG_PATH"
+CONFIGURE_FLAGS += --enable-utf8proc
 
 define CHECK_DEPS
 	@command -v brew >/dev/null 2>&1 || \
@@ -56,7 +58,8 @@ define CHECK_DEPS
 	command -v pkg-config >/dev/null 2>&1 || MISSING="$$MISSING pkg-config"; \
 	command -v bison >/dev/null 2>&1 || command -v yacc >/dev/null 2>&1 || \
 		MISSING="$$MISSING bison"; \
-	brew --prefix libevent >/dev/null 2>&1 || MISSING="$$MISSING libevent"; \
+	brew --prefix libevent  >/dev/null 2>&1 || MISSING="$$MISSING libevent"; \
+	brew --prefix utf8proc  >/dev/null 2>&1 || MISSING="$$MISSING utf8proc"; \
 	if [ -n "$$MISSING" ]; then \
 		echo "==> Installing missing Homebrew packages:$$MISSING"; \
 		brew install$$MISSING || exit 1; \
