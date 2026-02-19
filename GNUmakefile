@@ -64,8 +64,8 @@ define CHECK_DEPS
 	command -v pkg-config >/dev/null 2>&1 || MISSING="$$MISSING pkg-config"; \
 	command -v bison >/dev/null 2>&1 || command -v yacc >/dev/null 2>&1 || \
 		MISSING="$$MISSING bison"; \
-	brew --prefix libevent  >/dev/null 2>&1 || MISSING="$$MISSING libevent"; \
-	brew --prefix utf8proc  >/dev/null 2>&1 || MISSING="$$MISSING utf8proc"; \
+	brew list libevent  >/dev/null 2>&1 || MISSING="$$MISSING libevent"; \
+	brew list utf8proc  >/dev/null 2>&1 || MISSING="$$MISSING utf8proc"; \
 	if [ -n "$$MISSING" ]; then \
 		echo "==> Installing missing Homebrew packages:$$MISSING"; \
 		brew install$$MISSING || exit 1; \
