@@ -77,18 +77,28 @@ else ifeq ($(UNAME_S),Linux)
 CONFIGURE_ENV =
 
 define CHECK_DEPS
-	@MISSING=""; \
+	@MISSING=""; MISSING_LIBS=""; \
 	command -v autoconf   >/dev/null 2>&1 || MISSING="$$MISSING autoconf"; \
 	command -v aclocal    >/dev/null 2>&1 || MISSING="$$MISSING automake"; \
 	command -v pkg-config >/dev/null 2>&1 || MISSING="$$MISSING pkg-config"; \
 	command -v yacc >/dev/null 2>&1 || command -v bison >/dev/null 2>&1 || \
 		MISSING="$$MISSING bison"; \
-	if [ -n "$$MISSING" ]; then \
-		echo "Error: missing dependencies:$$MISSING"; \
-		echo "  Debian/Ubuntu:  sudo apt install$$MISSING"; \
-		echo "  Fedora/RHEL:    sudo dnf install$$MISSING"; \
-		echo "You also need libevent-dev (or libevent-devel) and"; \
-		echo "libncurses-dev (or ncurses-devel)."; \
+	if command -v pkg-config >/dev/null 2>&1; then \
+		pkg-config --exists libevent_core 2>/dev/null || \
+		pkg-config --exists libevent 2>/dev/null || \
+			MISSING_LIBS="$$MISSING_LIBS libevent-dev(deb)/libevent-devel(rpm)"; \
+		pkg-config --exists ncurses 2>/dev/null || \
+		pkg-config --exists ncursesw 2>/dev/null || \
+		pkg-config --exists tinfo 2>/dev/null || \
+			MISSING_LIBS="$$MISSING_LIBS libncurses-dev(deb)/ncurses-devel(rpm)"; \
+	fi; \
+	if [ -n "$$MISSING" ] || [ -n "$$MISSING_LIBS" ]; then \
+		[ -n "$$MISSING" ] && \
+			echo "Error: missing tools:$$MISSING"; \
+		[ -n "$$MISSING_LIBS" ] && \
+			echo "Error: missing libraries:$$MISSING_LIBS"; \
+		echo "  Debian/Ubuntu:  sudo apt install$$MISSING libevent-dev libncurses-dev"; \
+		echo "  Fedora/RHEL:    sudo dnf install$$MISSING libevent-devel ncurses-devel"; \
 		exit 1; \
 	fi
 endef
