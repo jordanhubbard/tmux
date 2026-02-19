@@ -1,3 +1,9 @@
+CHANGES FROM 3.6a TO next-3.7
+
+* Add session grid mode (show-session-grid command, alias gridview, bound to
+  C-b G) which displays all sessions simultaneously in a 2D tiled grid with
+  live previews. Add -G flag to start tmux directly in this mode.
+
 CHANGES FROM 3.6 TO 3.6a
 
 * Fix a buffer overread and an infinite loop in format processing (reported by

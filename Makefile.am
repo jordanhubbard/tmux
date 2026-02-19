@@ -134,6 +134,7 @@ dist_tmux_SOURCES = \
 	cmd-select-window.c \
 	cmd-send-keys.c \
 	cmd-server-access.c \
+	cmd-session-grid.c \
 	cmd-set-buffer.c \
 	cmd-set-environment.c \
 	cmd-set-option.c \
@@ -209,6 +210,7 @@ dist_tmux_SOURCES = \
 	window-clock.c \
 	window-copy.c \
 	window-customize.c \
+	window-session-grid.c \
 	window-tree.c \
 	window.c \
 	xmalloc.c \

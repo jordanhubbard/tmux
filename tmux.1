@@ -23,7 +23,7 @@
 .Sh SYNOPSIS
 .Nm tmux
 .Bk -words
-.Op Fl 2CDhlNuVv
+.Op Fl 2CDGhlNuVv
 .Op Fl c Ar shell-command
 .Op Fl f Ar file
 .Op Fl L Ar socket-name
@@ -133,6 +133,33 @@ With
 .Fl D ,
 .Ar command
 may not be specified.
+.It Fl G
+Start in session grid mode.
+A new session is created and all sessions are displayed simultaneously
+in a 2D tiled grid with live previews that update once per second.
+.Pp
+Once in the grid,
+arrow keys or
+.Em hjkl
+navigate between cells,
+.Ql \&(
+and
+.Ql \&)
+cycle through sessions,
+number keys
+.Em 0\-9
+jump to a session by index,
+and a mouse click selects a cell.
+Press
+.Ic Enter
+to switch to the highlighted session or
+.Ql q
+/
+.Ic Escape
+to leave the grid and return to the normal view.
+.Pp
+This is equivalent to running
+.Ql new-session \&; show-session-grid .
 .It Fl f Ar file
 Specify an alternative configuration file.
 By default,
@@ -1590,6 +1617,42 @@ server option.
 and
 .Fl T
 show debugging information about jobs and terminals.
+.Tg gridview
+.It Xo Ic show-session-grid
+.Op Fl t Ar target-pane
+.Xc
+.D1 Pq alias: Ic gridview
+Enter session grid mode on
+.Ar target-pane
+(or the current pane).
+Every live session is shown in a bordered cell arranged in a 2D grid
+that fills the available terminal area.
+Each cell displays the session name in its top border and a live preview
+of the session's active pane; previews refresh once per second.
+.Pp
+The grid is navigated with the following keys:
+.Bl -tag -width "0\-9XX" -compact
+.It Em hjkl No or arrow keys
+Move the highlight left, down, up, or right.
+.It Ql \&( No and Ql \&)
+Cycle to the previous or next session (wrapping at the ends).
+.It Em 0\-9
+Jump directly to the session at that index.
+.It Mouse click
+Select the cell under the pointer.
+.It Ic Enter
+Switch the client to the highlighted session and exit the grid.
+.It Ql q No or Ic Escape
+Exit the grid without switching sessions.
+.El
+.Pp
+The default key binding is
+.Ql C\-b G .
+The
+.Fl G
+command-line flag starts
+.Nm
+directly in this mode.
 .Tg source
 .It Xo Ic source-file
 .Op Fl Fnqv

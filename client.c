@@ -249,6 +249,14 @@ client_main(struct event_base *base, int argc, char **argv, uint64_t flags,
 	if (shell_command != NULL) {
 		msg = MSG_SHELL;
 		flags |= CLIENT_STARTSERVER;
+	} else if (argc == 0 && (flags & CLIENT_SESSIONGRID)) {
+		msg = MSG_COMMAND;
+		flags |= CLIENT_STARTSERVER;
+		argc = 3;
+		argv = xcalloc(argc, sizeof *argv);
+		argv[0] = xstrdup("new-session");
+		argv[1] = xstrdup(";");
+		argv[2] = xstrdup("show-session-grid");
 	} else if (argc == 0) {
 		msg = MSG_COMMAND;
 		flags |= CLIENT_STARTSERVER;
