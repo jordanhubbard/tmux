@@ -34,26 +34,18 @@ else
 UNAME_S         := $(shell uname -s)
 CONFIGURE_FLAGS ?=
 
-# Required command-line tools (portable across all platforms).
-REQUIRED_TOOLS  = autoconf aclocal pkg-config
-REQUIRED_YACC   = yacc bison
-
 # --------------------------------------------------------------------------
 # Per-OS configuration.
 # --------------------------------------------------------------------------
 
 ifeq ($(UNAME_S),Darwin)
 # -- macOS (Homebrew) ------------------------------------------------------
-PACKAGE_MANAGER      = brew
-INSTALL_HINT         = brew install
-REQUIRED_PACKAGES    = autoconf automake pkg-config libevent bison
 
 HOMEBREW_PREFIX := $(shell brew --prefix 2>/dev/null)
-ifneq ($(HOMEBREW_PREFIX),)
-  _LIBEVENT_PC := $(shell brew --prefix libevent 2>/dev/null)/lib/pkgconfig
-  _NCURSES_PC  := $(shell brew --prefix ncurses  2>/dev/null)/lib/pkgconfig
-  export PKG_CONFIG_PATH := $(_LIBEVENT_PC):$(_NCURSES_PC):$(PKG_CONFIG_PATH)
-endif
+
+# Set PKG_CONFIG_PATH at configure time (after brew install has run).
+CONFIGURE_ENV = \
+	PKG_CONFIG_PATH="$$(brew --prefix libevent 2>/dev/null)/lib/pkgconfig:$$(brew --prefix ncurses 2>/dev/null)/lib/pkgconfig:$$PKG_CONFIG_PATH"
 
 define CHECK_DEPS
 	@command -v brew >/dev/null 2>&1 || \
@@ -66,14 +58,15 @@ define CHECK_DEPS
 		MISSING="$$MISSING bison"; \
 	brew --prefix libevent >/dev/null 2>&1 || MISSING="$$MISSING libevent"; \
 	if [ -n "$$MISSING" ]; then \
-		echo "Error: missing dependencies:$$MISSING"; \
-		echo "Install with:  brew install$$MISSING"; \
-		exit 1; \
+		echo "==> Installing missing Homebrew packages:$$MISSING"; \
+		brew install$$MISSING || exit 1; \
 	fi
 endef
 
 else ifeq ($(UNAME_S),Linux)
 # -- Linux -----------------------------------------------------------------
+CONFIGURE_ENV =
+
 define CHECK_DEPS
 	@MISSING=""; \
 	command -v autoconf   >/dev/null 2>&1 || MISSING="$$MISSING autoconf"; \
@@ -93,6 +86,8 @@ endef
 
 else ifeq ($(UNAME_S),FreeBSD)
 # -- FreeBSD ---------------------------------------------------------------
+CONFIGURE_ENV =
+
 define CHECK_DEPS
 	@MISSING=""; \
 	command -v autoconf   >/dev/null 2>&1 || MISSING="$$MISSING autoconf"; \
@@ -109,6 +104,8 @@ endef
 
 else ifeq ($(UNAME_S),OpenBSD)
 # -- OpenBSD ---------------------------------------------------------------
+CONFIGURE_ENV =
+
 define CHECK_DEPS
 	@MISSING=""; \
 	command -v autoconf-2.69   >/dev/null 2>&1 || MISSING="$$MISSING autoconf-2.69"; \
@@ -125,6 +122,8 @@ endef
 
 else
 # -- Unknown / fallback ----------------------------------------------------
+CONFIGURE_ENV =
+
 define CHECK_DEPS
 	@MISSING=""; \
 	command -v autoconf   >/dev/null 2>&1 || MISSING="$$MISSING autoconf"; \
@@ -156,7 +155,7 @@ bootstrap: check-deps
 		sh autogen.sh || exit 1; \
 	fi
 	@echo "==> Running ./configure $(CONFIGURE_FLAGS) ..."
-	@./configure $(CONFIGURE_FLAGS) || exit 1
+	@$(CONFIGURE_ENV) ./configure $(CONFIGURE_FLAGS) || exit 1
 	@echo "==> Bootstrap complete."
 
 check-deps:
