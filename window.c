@@ -735,6 +735,8 @@ window_add_pane(struct window *w, struct window_pane *other, u_int hlimit,
 
 	if (other == NULL)
 		other = w->active;
+	if (other == NULL && !TAILQ_EMPTY(&w->panes))
+		other = TAILQ_LAST(&w->panes, window_panes);
 
 	wp = window_pane_create(w, w->sx, w->sy, hlimit);
 	if (TAILQ_EMPTY(&w->panes)) {
@@ -1943,6 +1945,8 @@ window_pane_send_theme_update(struct window_pane *wp)
 	enum client_theme	theme;
 
 	if (wp == NULL || window_pane_exited(wp))
+		return;
+	if (wp->event == NULL)
 		return;
 	if (~wp->flags & PANE_THEMECHANGED)
 		return;

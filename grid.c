@@ -1428,6 +1428,9 @@ grid_reflow(struct grid *gd, u_int sx)
 	struct grid_cell	 gc;
 	u_int			 yy, width, i, at;
 
+	if (sx == 0)
+		return;
+
 	/*
 	 * Create a destination grid. This is just used as a container for the
 	 * line data and may not be fully valid.

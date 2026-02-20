@@ -527,7 +527,10 @@ layout_init(struct window *w, struct window_pane *wp)
 void
 layout_free(struct window *w)
 {
+	if (w->layout_root == NULL)
+		return;
 	layout_free_cell(w->layout_root);
+	w->layout_root = NULL;
 }
 
 /* Resize the entire layout after window resize. */
@@ -923,6 +926,8 @@ layout_split_pane(struct window_pane *wp, enum layout_type type, int size,
 		lc = wp->window->layout_root;
 	else
 		lc = wp->layout_cell;
+	if (lc == NULL)
+		return (NULL);
 	status = options_get_number(wp->window->options, "pane-border-status");
 	scrollbars = options_get_number(wp->window->options, "pane-scrollbars");
 

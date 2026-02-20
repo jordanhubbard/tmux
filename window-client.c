@@ -174,6 +174,8 @@ window_client_draw(__unused void *modedata, void *itemdata,
 	if (c->session == NULL || (c->flags & CLIENT_UNATTACHEDFLAGS))
 		return;
 	wp = c->session->curw->window->active;
+	if (wp == NULL)
+		return;
 
 	lines = status_line_size(c);
 	if (lines >= sy)

@@ -27,6 +27,9 @@ resize_window(struct window *w, u_int sx, u_int sy, int xpixel, int ypixel)
 {
 	int	zoomed;
 
+	if (w->active == NULL)
+		return;
+
 	/* Check size limits. */
 	if (sx < WINDOW_MINIMUM)
 		sx = WINDOW_MINIMUM;

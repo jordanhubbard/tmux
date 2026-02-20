@@ -3919,7 +3919,8 @@ window_copy_move_after_search_mark(struct window_copy_mode_data *data,
 	struct screen  *s = data->backing;
 	u_int		at, start;
 
-	if (window_copy_search_mark_at(data, *fx, *fy, &start) == 0 &&
+	if (data->searchmark != NULL &&
+	    window_copy_search_mark_at(data, *fx, *fy, &start) == 0 &&
 	    data->searchmark[start] != 0) {
 		while (window_copy_search_mark_at(data, *fx, *fy, &at) == 0) {
 			if (data->searchmark[at] != data->searchmark[start])

@@ -355,7 +355,6 @@ style_tostring(struct style *sy)
 	if (sy->pad >= 0) {
 		xsnprintf(s + off, sizeof s - off, "%spad=%u", comma,
 		    sy->pad);
-		comma = ",";
 	}
 	if (*s == '\0')
 		return ("default");

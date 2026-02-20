@@ -247,7 +247,7 @@ window_tree_build_window(struct session *s, struct winlink *wl,
 {
 	struct window_tree_modedata	*data = modedata;
 	struct window_tree_itemdata	*item;
-	struct mode_tree_item		*mti;
+	struct mode_tree_item		*mti = NULL;
 	char				*name, *text;
 	struct window_pane		*wp, **l;
 	u_int				 n, i;
@@ -260,6 +260,8 @@ window_tree_build_window(struct session *s, struct winlink *wl,
 	item->winlink = wl->idx;
 	item->pane = -1;
 
+	if (wl->window->active == NULL)
+		goto empty;
 	ft = format_create(NULL, NULL, FORMAT_PANE|wl->window->active->id, 0);
 	format_defaults(ft, NULL, s, wl, NULL);
 	text = format_expand(ft, data->format);
@@ -296,7 +298,8 @@ window_tree_build_window(struct session *s, struct winlink *wl,
 empty:
 	window_tree_free_item(item);
 	data->item_size--;
-	mode_tree_remove(data->data, mti);
+	if (mti != NULL)
+		mode_tree_remove(data->data, mti);
 	return (0);
 }
 
@@ -319,6 +322,8 @@ window_tree_build_session(struct session *s, void *modedata,
 	item->winlink = -1;
 	item->pane = -1;
 
+	if (wl->window->active == NULL)
+		return;
 	ft = format_create(NULL, NULL, FORMAT_PANE|wl->window->active->id, 0);
 	format_defaults(ft, NULL, s, NULL, NULL);
 	text = format_expand(ft, data->format);
@@ -744,6 +749,8 @@ window_tree_search(__unused void *modedata, void *itemdata, const char *ss,
 	case WINDOW_TREE_PANE:
 		if (s == NULL || wl == NULL || wp == NULL)
 			break;
+		if (wp->fd == -1)
+			return (0);
 		cmd = osdep_get_name(wp->fd, wp->tty);
 		if (cmd == NULL || *cmd == '\0') {
 			free(cmd);
@@ -821,6 +828,8 @@ window_tree_swap(void *cur_itemdata, void *other_itemdata,
 	window_tree_pull_item(other, &other_session, &other_winlink,
 	    &other_pane);
 
+	if (cur_session == NULL || other_session == NULL)
+		return (0);
 	if (cur_session != other_session)
 		return (0);
 

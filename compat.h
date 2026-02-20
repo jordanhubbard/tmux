@@ -376,7 +376,7 @@ const char	*getprogname(void);
 
 #ifndef HAVE_SETPROCTITLE
 /* setproctitle.c */
-void		 setproctitle(const char *, ...);
+void		 setproctitle(const char *, ...) __attribute__((format(printf, 1, 2)));
 #endif
 
 #ifndef HAVE_CLOCK_GETTIME

@@ -452,7 +452,6 @@ sort_get_panes_session(struct session *s, u_int *n,
     struct sort_criteria *sort_crit)
 {
 	struct winlink			 *wl = NULL;
-	struct window			 *w = NULL;
 	struct window_pane		 *wp = NULL;
 	u_int		 		  i;
 	static struct window_pane	**l = NULL;
@@ -460,7 +459,7 @@ sort_get_panes_session(struct session *s, u_int *n,
 
 	i = 0;
 	RB_FOREACH(wl, winlinks, &s->windows)  {
-		TAILQ_FOREACH(wp, &w->panes, entry) {
+		TAILQ_FOREACH(wp, &wl->window->panes, entry) {
 			if (lsz <= i) {
 				lsz += 100;
 				l = xreallocarray(l, lsz, sizeof *l);

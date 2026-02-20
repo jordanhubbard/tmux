@@ -139,7 +139,8 @@ screen_write_set_client_cb(struct tty_ctx *ttyctx, struct client *c)
 		return (0);
 	}
 
-	if (c->session->curw->window != wp->window)
+	if (c->session->curw == NULL ||
+	    c->session->curw->window != wp->window)
 		return (0);
 	if (wp->layout_cell == NULL)
 		return (0);
@@ -825,6 +826,9 @@ screen_write_preview(struct screen_write_ctx *ctx, struct screen *src, u_int nx,
 	struct screen		*s = ctx->s;
 	struct grid_cell	 gc;
 	u_int			 cx, cy, px, py;
+
+	if (src == NULL || src->grid == NULL)
+		return;
 
 	cx = s->cx;
 	cy = s->cy;

@@ -876,6 +876,8 @@ format_cb_current_command(struct format_tree *ft)
 
 	if (wp == NULL || wp->shell == NULL)
 		return (NULL);
+	if (wp->fd == -1)
+		return (NULL);
 
 	cmd = osdep_get_name(wp->fd, wp->tty);
 	if (cmd == NULL || *cmd == '\0') {
@@ -899,6 +901,8 @@ format_cb_current_path(struct format_tree *ft)
 	char			*cwd;
 
 	if (wp == NULL)
+		return (NULL);
+	if (wp->fd == -1)
 		return (NULL);
 
 	cwd = osdep_get_cwd(wp->fd);

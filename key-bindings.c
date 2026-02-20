@@ -382,7 +382,7 @@ key_bindings_init(void)
 		"bind -N 'List key bindings' ? { list-keys -N }",
 		"bind -N 'Choose and detach a client from a list' D { choose-client -Z }",
 		"bind -N 'Spread panes out evenly' E { select-layout -E }",
-		"bind -N 'Show session grid' G { show-session-grid }",
+		"bind -N 'Show session grid' G { show-grid }",
 		"bind -N 'Switch to the last client' L { switch-client -l }",
 		"bind -N 'Clear the marked pane' M { select-pane -M }",
 		"bind -N 'Enter copy mode' [ { copy-mode }",

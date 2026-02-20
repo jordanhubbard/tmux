@@ -34,6 +34,15 @@ autoconf, automake and pkg-config:
 
 	$ git clone https://github.com/tmux/tmux.git
 	$ cd tmux
+	$ make
+
+The included GNUmakefile bootstraps the autotools build system automatically,
+installs any missing dependencies on macOS (via Homebrew) or lists them on
+Linux, and performs an out-of-tree build.  Object files are placed in obj/
+and the final binary in bin/tmux, keeping the source tree clean.
+
+Alternatively, to bootstrap manually:
+
 	$ sh autogen.sh
 	$ ./configure && make
 	$ sudo make install
@@ -46,6 +55,19 @@ welcome. Please send by email to:
 	tmux-users@googlegroups.com
 
 Or open a GitHub issue or pull request.
+
+* Session Grid
+
+tmux can display all sessions simultaneously in a 2D tiled grid.  Press
+C-b G (or run show-session-grid) to toggle the grid view.  Each cell is a
+real pane that mirrors a session's active window and forwards keyboard input,
+so standard pane-navigation keys (C-b arrow, C-b o, etc.) work inside the
+grid.  C-b ( and C-b ) cycle between grid panes, C-b Enter switches to the
+session under the active pane, and C-b G toggles back.
+
+Start tmux directly in grid mode with:
+
+	$ tmux -G
 
 * Documentation
 

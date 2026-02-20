@@ -617,7 +617,7 @@ server_client_check_mouse_in_pane(struct window_pane *wp, u_int px, u_int py,
 	struct options		*wo = w->options;
 	struct window_pane	*fwp;
 	int			 pane_status, sb, sb_pos, sb_w, sb_pad;
-	u_int			 line, sl_top, sl_bottom;
+	u_int			 line = 0, sl_top, sl_bottom;
 
 	sb = options_get_number(wo, "pane-scrollbars");
 	sb_pos = options_get_number(wo, "pane-scrollbars-position");
@@ -698,7 +698,7 @@ server_client_check_mouse(struct client *c, struct key_event *event)
 	struct window_pane	*wp, *fwp;
 	u_int			 x, y, b, sx, sy, px, py, sl_mpos = 0;
 	int			 ignore = 0;
-	key_code		 key;
+	key_code		 key = KEYC_UNKNOWN;
 	struct timeval		 tv;
 	struct style_range	*sr;
 	enum { NOTYPE,
@@ -3365,7 +3365,9 @@ server_client_set_path(struct client *c)
 
 	if (s->curw == NULL)
 		return;
-	if (s->curw->window->active->base.path == NULL)
+	if (s->curw->window->active == NULL)
+		path = "";
+	else if (s->curw->window->active->base.path == NULL)
 		path = "";
 	else
 		path = s->curw->window->active->base.path;

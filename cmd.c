@@ -95,7 +95,6 @@ extern const struct cmd_entry cmd_select_window_entry;
 extern const struct cmd_entry cmd_send_keys_entry;
 extern const struct cmd_entry cmd_send_prefix_entry;
 extern const struct cmd_entry cmd_server_access_entry;
-extern const struct cmd_entry cmd_session_grid_entry;
 extern const struct cmd_entry cmd_set_buffer_entry;
 extern const struct cmd_entry cmd_set_environment_entry;
 extern const struct cmd_entry cmd_set_hook_entry;
@@ -103,6 +102,7 @@ extern const struct cmd_entry cmd_set_option_entry;
 extern const struct cmd_entry cmd_set_window_option_entry;
 extern const struct cmd_entry cmd_show_buffer_entry;
 extern const struct cmd_entry cmd_show_environment_entry;
+extern const struct cmd_entry cmd_show_grid_entry;
 extern const struct cmd_entry cmd_show_hooks_entry;
 extern const struct cmd_entry cmd_show_messages_entry;
 extern const struct cmd_entry cmd_show_options_entry;
@@ -188,7 +188,6 @@ const struct cmd_entry *cmd_table[] = {
 	&cmd_send_keys_entry,
 	&cmd_send_prefix_entry,
 	&cmd_server_access_entry,
-	&cmd_session_grid_entry,
 	&cmd_set_buffer_entry,
 	&cmd_set_environment_entry,
 	&cmd_set_hook_entry,
@@ -196,6 +195,7 @@ const struct cmd_entry *cmd_table[] = {
 	&cmd_set_window_option_entry,
 	&cmd_show_buffer_entry,
 	&cmd_show_environment_entry,
+	&cmd_show_grid_entry,
 	&cmd_show_hooks_entry,
 	&cmd_show_messages_entry,
 	&cmd_show_options_entry,
@@ -820,9 +820,11 @@ cmd_mouse_pane(struct mouse_event *m, struct session **sp,
 
 	if ((wl = cmd_mouse_window(m, sp)) == NULL)
 		return (NULL);
-	if (m->wp == -1)
+	if (m->wp == -1) {
 		wp = wl->window->active;
-	else {
+		if (wp == NULL)
+			return (NULL);
+	} else {
 		if ((wp = window_pane_find_by_id(m->wp)) == NULL)
 			return (NULL);
 		if (!window_has_pane(wl->window, wp))

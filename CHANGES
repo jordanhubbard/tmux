@@ -1,8 +1,16 @@
 CHANGES FROM 3.6a TO next-3.7
 
-* Add session grid mode (show-session-grid command, alias gridview, bound to
-  C-b G) which displays all sessions simultaneously in a 2D tiled grid with
-  live previews. Add -G flag to start tmux directly in this mode.
+* Add show-grid command (alias gridview, C-b G) as a lightweight window mode.
+  Displays a 2D grid of session (or window) previews as an overlay on the
+  current pane.  Arrow keys navigate the grid, Enter switches to the selected
+  session, q/Escape exits.  With -w, shows windows of the current session
+  instead.  Previews update once per second.  No dedicated session or mirror
+  panes are created.
+
+* Move build artifacts out of the source tree.  The GNUmakefile bootstrap
+  wrapper now performs a VPATH (out-of-tree) build: object files go into obj/
+  and the final binary is placed in bin/tmux, keeping the source directory
+  clean.
 
 CHANGES FROM 3.6 TO 3.6a
 

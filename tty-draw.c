@@ -114,7 +114,7 @@ tty_draw_line(struct tty *tty, struct screen *s, u_int px, u_int py, u_int nx,
 {
 	struct grid		*gd = s->grid;
 	const struct grid_cell	*gcp;
-	struct grid_cell	 gc, ngc, last;
+	struct grid_cell	 gc, ngc, last = { 0 };
 	struct grid_line	*gl;
 	u_int			 i, j, last_i, cx, ex, width;
 	u_int			 cellsize, bg;
@@ -261,12 +261,13 @@ tty_draw_line(struct tty *tty, struct screen *s, u_int px, u_int py, u_int nx,
 				next_state = TTY_DRAW_LINE_NEW2;
 			else
 				next_state = TTY_DRAW_LINE_NEW1;
-		}
-		if (log_get_level() != 0) {
-			log_debug("%s: cell %u empty %u, bg %u; state: "
-			    "current %s, next %s", __func__, px + i, empty,
-			    gcp->bg, tty_draw_line_states[current_state],
-			    tty_draw_line_states[next_state]);
+			if (log_get_level() != 0) {
+				log_debug("%s: cell %u empty %u, bg %u; state: "
+				    "current %s, next %s", __func__, px + i,
+				    empty, gcp->bg,
+				    tty_draw_line_states[current_state],
+				    tty_draw_line_states[next_state]);
+			}
 		}
 
 		/* If the state has changed, flush any collected data. */
@@ -296,9 +297,10 @@ tty_draw_line(struct tty *tty, struct screen *s, u_int px, u_int py, u_int nx,
 			last_i = i;
 		}
 
-		/* Append the cell if it is not empty and not padding. */
+		/* Append the cell if it is not empty, padding, or done. */
 		if (next_state != TTY_DRAW_LINE_EMPTY &&
-		    next_state != TTY_DRAW_LINE_PAD) {
+		    next_state != TTY_DRAW_LINE_PAD &&
+		    next_state != TTY_DRAW_LINE_DONE) {
 			memcpy(buf + len, gcp->data.data, gcp->data.size);
 			len += gcp->data.size;
 			width += gcp->data.width;

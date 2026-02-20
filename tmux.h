@@ -1450,6 +1450,7 @@ struct session {
 	struct options	*options;
 
 #define SESSION_ALERTED 0x1
+
 	int		 flags;
 
 	u_int		 attached;
@@ -2036,7 +2037,6 @@ struct client {
 #define CLIENT_ASSUMEPASTING 0x2000000000ULL
 #define CLIENT_REDRAWSCROLLBARS 0x4000000000ULL
 #define CLIENT_NO_DETACH_ON_DESTROY 0x8000000000ULL
-#define CLIENT_SESSIONGRID 0x10000000000ULL
 #define CLIENT_ALLREDRAWFLAGS		\
 	(CLIENT_REDRAWWINDOW|		\
 	 CLIENT_REDRAWSTATUS|		\
@@ -3492,8 +3492,8 @@ extern const struct window_mode window_buffer_mode;
 /* window-tree.c */
 extern const struct window_mode window_tree_mode;
 
-/* window-session-grid.c */
-extern const struct window_mode window_session_grid_mode;
+/* window-grid.c */
+extern const struct window_mode window_grid_mode;
 
 /* window-clock.c */
 extern const struct window_mode window_clock_mode;
